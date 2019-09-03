@@ -116,7 +116,16 @@ function pow(base, exponent) {
 //     2-dimensional array: [['some data']]
 //     3-dimensional array: [[['some data']]]
 function flatten(data) {
-    
+    if (!Array.isArray(data)) return [data];
+
+    let allEls = []
+
+    data.forEach((el) => {
+        let flattened = flatten(el)
+        allEls.push(...flattened)
+    });
+
+    return allEls;
 }
 
 // Write a function, fileFinder(directories, targetFile), that accepts an object representing directories and a string respresenting a filename.
@@ -159,7 +168,10 @@ function flatten(data) {
 // fileFinder(desktop, 'everlong.flac');            // => true
 // fileFinder(desktop, 'sequoia.jpeg');             // => false
 function fileFinder(directories, targetFile) {
-
+    for (let name in directories) {
+        if (name === targetFile || fileFinder(directories[name], targetFile)) return true;   
+    }
+    return false;
 }
 
 
@@ -173,7 +185,16 @@ function fileFinder(directories, targetFile) {
 // pathFinder(desktop, 'everlong.flac'));       // => '/music/genres/rock/everlong.flac'
 // pathFinder(desktop, 'honeybadger.png'));     // => null
 function pathFinder(directories, targetFile) {
+    for (let name in directories) {
+        if (name === targetFile) return "/" + targetFile;
 
+        let subdir = directories[name];
+        let subpath = pathFinder(subdir, targetFile)
+        if (subpath !== null) {
+            return name + subpath;
+        }
+    }
+    return null;
 }
 
 
